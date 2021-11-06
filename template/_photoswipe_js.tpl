@@ -14,6 +14,7 @@ function startPhotoSwipe(idx) {
                  $pic.find('a').each(function() {
                    if ($(this).attr('data-video')) {
                      var $src            = $(this).data('src-original'),
+                         $id   = $(this).data('id'),
                          $size           = $(this).data('size-original').split('x'),
                          $width          = $size[0],
                          $height         = $size[1],
@@ -38,6 +39,7 @@ function startPhotoSwipe(idx) {
                      };
                    } else {
                      var $src_xlarge     = $(this).data('src-xlarge'),
+                         $id   = $(this).data('id'),
                          $size_xlarge    = $(this).data('size-xlarge').split(' x '),
                          $width_xlarge   = $size_xlarge[0],
                          $height_xlarge  = $size_xlarge[1],
@@ -75,6 +77,7 @@ function startPhotoSwipe(idx) {
                      var item = {
                          is_video: false,
                          href: $href,
+                         id: $id,
                          mediumImage: {
                              src   : $src_medium,
                              w     : $width_medium,
@@ -120,25 +123,14 @@ function startPhotoSwipe(idx) {
             focus: false,
             history: $history,
             preload: [1,2],
-{if $theme_config->social_enabled}
+            getImageURLForShare: function( shareButtonData ) {
+                return 'action.php?id='+photoSwipe.currItem.id+'&amp;part=e&amp;download' || '';
+            },
             shareButtons: [
-{if $theme_config->social_facebook}{literal}
-                           {id:'facebook', label:'<i class="fab fa-facebook fa-2x fa-fw"></i> Share on Facebook', url:'https://www.facebook.com/sharer/sharer.php?u={{url}}'},
-{/literal}{/if}
-{if $theme_config->social_twitter}{literal}
-                           {id:'twitter', label:'<i class="fab fa-twitter fa-2x fa-fw"></i> Tweet', url:'https://twitter.com/intent/tweet?url={{url}}'},
-{/literal}{/if}
-{if $theme_config->social_pinterest}{literal}
-                           {id:'pinterest', label:'<i class="fab fa-pinterest fa-2x fa-fw"></i> Pin it', url:'http://www.pinterest.com/pin/create/button/?url={{url}}&media=' + window.location + '/../{{raw_image_url}}'},
-{/literal}{/if}
-{if get_device() == 'mobile'}{literal}
-                           {id:'whatsapp', label:'<i class="fab fa-whatsapp fa-2x fa-fw"></i> Share via WhatsApp', url:'whatsapp://send?text={{url}}', download:true},
-{/literal}{/if}
 {literal}
-                           {id:'download', label:'<i class="fas fa-cloud-download-alt fa-2x fa-fw"></i> Download image', url:'{{raw_image_url}}', download:true}
+                           {id:'download', label:'<i class="fas fa-cloud-download-alt fa-2x fa-fw"></i> Download image', url:'{{raw_image_url}}', download: true}
 {/literal}
                         ],
-{/if}
         };
         var photoSwipe = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
         var realViewportWidth,
